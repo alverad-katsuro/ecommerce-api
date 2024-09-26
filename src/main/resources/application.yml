@@ -1,0 +1,189 @@
+spring:
+  profiles:
+    default: homol
+  application:
+    name: hodpe-api
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  #configuração do jackson
+  jackson:
+    default-property-inclusion: NON_NULL
+
+  artemis:
+    broker-url: ${ARTEMIS_URL:tcp://localhost:61616}
+    user: ${ARTEMIS_USER:activemq}
+    password: ${ARTEMIS_PASSWORD:admin}
+    embedded:
+      persistent: false
+
+  threads:
+    virtual:
+      enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      org:
+        hibernate:
+          envers:
+            "[default_schema]": auditoria
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            clientId: ${KEYCLOACK_CLIENT_ID}
+            clientSecret: ${KEYCLOACK_SECRET}
+            scope: openid,email,profile
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+          keycloak-client-credentials:
+            clientId: ${KEYCLOACK_CLIENT_ID}
+            clientSecret: ${KEYCLOACK_SECRET}
+            scope: openid,email,profile
+            authorization-grant-type: client_credentials
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}
+            user-name-attribute: preferred_username
+          keycloak-client-credentials:
+            issuer-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}
+          jwk-set-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}/protocol/openid-connect/certs
+
+  # Email configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# Swagger
+springdoc:
+  swagger-ui:
+    filter: true
+    use-root-path: true
+  show-login-endpoint: true
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  file:
+    name: /var/log/pontoEletronicoApi.log
+    path: /var/log
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    web: debug
+    sql: info
+    root: error
+
+# Server configuration
+server:
+  port: ${APP_PORT:80}
+  forward-headers-strategy: framework
+  compression:
+    enabled: true
+    min-response-size: 2048
+    mime-types:
+      - application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
+cors:
+  allowedOriginPatterns: ${ALLOWED_ORIGINS_PATTERN}
+
+services:
+  anexos-store-api:
+    base-url: ${ANEXOS_STORE_API}
+    consultar-arquivo: ${ANEXOS_STORE_API}/arquivo/
+    salvar-arquivo: ${ANEXOS_STORE_API}/arquivo
+  registrationId: keycloak-client-credentials
+
+keycloak:
+  registrationId: keycloak-client-credentials
+  clientId: ${KEYCLOACK_CLIENT_ID}
+  adminUrl: ${KEYCLOACK_BASE}/admin/realms/${KEYCLOACK_REALM}
+  rolesUrl: ${KEYCLOACK_BASE}/admin/realms/${KEYCLOACK_REALM}/roles
+  usersUrl: ${KEYCLOACK_BASE}/admin/realms/${KEYCLOACK_REALM}/users
+  authUrl: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}/protocol/openid-connect/auth
+
+eureka:
+  client:
+    enabled: false
+
+auth:
+  clientDefault: ${KEYCLOACK_CLIENT_ID}
+
+kanban:
+  colunas:
+    - "1. Em andamento 1º Grau"
+    - "1. Em andamento 1º grau sem sentença"
+    - "2.1 Com sentença procedente ao assistido mas pendente de julgamento de recurso"
+    - "2.2 Com sentença desfavorável ao assistido mas pendente de julgamento de recurso"
+    - "3.1 Pendente de execução ou cumprimento de sentença (honorários ao fundep)"
+    - "3.2 Pendente de execução ou cumprimento de sentença (somente em favor do assistido)"
+    - "4.1 Em fase de cumprimento de sentença (com honorários de sucumbência)"
+    - "4.2 Em fase de cumprimento de sentença (sem honorários de sucumbência)"
+    - "4.3 Em fase de cumprimento de sentença (somente monitorar honorários)"
+    - "4.4 Em fase de cumprimento de sentença contra o assistido (sem honorários)"
+    - "5.1 Arquivado sem recebimento de sucumbência"
+    - "5.2 Arquivado sem recebimento de sucumbência (extinto sem resolução do mérito)"
+    - "5.3 Arquivado sem recebimento de sucumbência (perda do objeto)"
+    - "5.4 Arquivado sem recebimento de sucumbência (fundamentação na súmula 421 do STJ)"
+    - "5.6 Arquivado sem recebimento de sucumbência (sentença procedente JEC sem recurso)"
+    - "5.7 Arquivado sem recebimento de sucumbência (sucumbente hipossuficiente)"
+    - "5.8 Arquivado com recebimento de sucumbência"
+    - "5.9 Arquivado sem recebimento de sucumbência (Sentença desfavorável ao assistido)"
+    - "6. Destituição de poderes da DPE em favor de advogado particular"
+    - "7. Processo distribuido a defensoria erroneamente."
+    - "8. Com sentença desfavorável ao assistido"
+    - "9 Acordo judicial sem honorários de sucumbência"
+    - "10. Ambas as partes são representadas pela DP"
+    - "11. Havia sucumbência mas prescreveu"
+    - "12. Processo não aparece no PJE e nem encontramos publicações"
+#   tags: // Colocar dados default?
+#     tag:
+#       - nome: 'SUCUMBÊNCIA EM PARCELAMENTO'
+#         cor: '#FFD700'
+#       - nome: 'PRECATÓRIO'
+#         cor: '#FF4500'
+#       - nome: 'RPV'
+#         cor: '#FF4500'
+#       - nome: 'PENDENTE DE EXPEDIÇÃO DE ALVARÁ'
+#         cor: '#FF4500'
+#       - nome: 'EM CUMPRIMENTO DE SENTENÇA'
+#         cor: '#FF4500'
+#       - nome: 'PENDENTE DE CUMPRIMENTO DE SENTENÇA'
+#         cor: '#FF4500'
+#       - nome: 'ADVOGADO(A) PARTICULAR (MONITORAR SUCUMBÊNCIA PROPORCIONAL)'
+#         cor: '#FF4500'
+#       - nome: 'PENDENTE DE JULGAMENTO DE RECURSO'
+#         cor: '#FF4500'
+#       - nome: 'PENDENTE DE DILIGÊNCIA'
+#         cor: '#FF4500'
+
+websocket:
+  relay-host: ${WEBSOCKET_RELAY_HOST:localhost}
+  relay-port: ${WEBSOCKET_RELAY_PORT:61613}
+  user: ${WEBSOCKET_RELAY_USER:admin}
+  password: ${WEBSOCKET_RELAY_PASSWORD:admin}
