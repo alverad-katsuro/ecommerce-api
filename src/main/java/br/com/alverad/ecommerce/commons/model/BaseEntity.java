@@ -1,4 +1,4 @@
-package br.com.alverad.ecommerce.commons.model.audit;
+package br.com.alverad.ecommerce.commons.model;
 
 import java.time.LocalDateTime;
 import org.hibernate.annotations.ColumnDefault;
@@ -23,7 +23,7 @@ import lombok.Data;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Auditable {
+public class BaseEntity {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)

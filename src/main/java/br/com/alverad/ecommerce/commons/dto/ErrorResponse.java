@@ -1,4 +1,4 @@
-package br.com.alverad.ecommerce.commons.dto.erros;
+package br.com.alverad.ecommerce.commons.dto;
 
 import java.util.Map;
 import lombok.AllArgsConstructor;

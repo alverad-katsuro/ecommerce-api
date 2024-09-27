@@ -7,18 +7,14 @@ import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import br.com.alverad.ecommerce.commons.dto.erros.ErrorResponse;
+import br.com.alverad.ecommerce.commons.dto.ErrorResponse;
 import br.com.alverad.ecommerce.commons.enumeration.ErrorType;
-import br.com.alverad.ecommerce.commons.exceptions.InvalidRequestException;
-import br.com.alverad.ecommerce.commons.exceptions.NotFoundException;
-import br.com.alverad.ecommerce.commons.exceptions.UnauthorizedRequestException;
 
 /**
  * Responsável por tratar as exceções gerais da aplicação.
@@ -30,22 +26,6 @@ import br.com.alverad.ecommerce.commons.exceptions.UnauthorizedRequestException;
 @RestControllerAdvice
 public class ControllerAdvise {
 
-    /**
-     * Caso algum recurso não seja encontrado no banco de dados sera retornado uma mensagem
-     * padronizada.
-     *
-     * @param ex Excessão capturada.
-     * @return Menssagem.
-     * @author Alfredo Gabriel
-     * @since 26/03/2023
-     */
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotfoundException(NotFoundException ex) {
-        return ErrorResponse.builder().message(ex.getMessage())
-                .technicalMessage(ex.getLocalizedMessage()).internalCode(ex.getInternalCode())
-                .build();
-    }
 
     @ExceptionHandler(SQLException.class)
     @ResponseStatus(code = HttpStatus.CONFLICT)
@@ -94,20 +74,6 @@ public class ControllerAdvise {
     }
 
     /**
-     * Caso seja realizado uma requisição invalida.
-     *
-     * @param ex Excessão capturada.
-     * @return Mensagem
-     * @author Alfredo Gabriel
-     * @since 26/03/2023
-     */
-    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(UnauthorizedRequestException.class)
-    public ErrorResponse handleUnauthorizedRequestException(UnauthorizedRequestException ex) {
-        return new ErrorResponse(ex.getMessage(), ex.getLocalizedMessage(), ex.getInternalCode());
-    }
-
-    /**
      * Caso a autenticação não seja encontrado nenhum elemento correspondente.
      *
      * @param ex Excessão capturada.
@@ -120,27 +86,6 @@ public class ControllerAdvise {
     public ErrorResponse handleNoSuchElementException(NoSuchElementException ex) {
         return new ErrorResponse(ErrorType.REPORT_002.getMessage(), ex.getLocalizedMessage(),
                 ErrorType.REPORT_002.getInternalCode());
-    }
-
-    /**
-     * Caso a autenticação não seja encontrado nenum exemplo de e-mail
-     *
-     * @param ex Excessão capturada.
-     * @return Mensagem
-     * @author Alfredo Gabriel
-     * @since 21/04/2023
-     */
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorResponse handleNotFound(HttpMessageNotReadableException ex) {
-        return new ErrorResponse(ErrorType.REPORT_003.getMessage(), ex.getLocalizedMessage(),
-                ErrorType.REPORT_003.getInternalCode());
-    }
-
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidRequestException.class)
-    public ErrorResponse handleNotFound(InvalidRequestException ex) {
-        return new ErrorResponse(ex.getMessage(), ex.getLocalizedMessage(), ex.getInternalCode());
     }
 
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)

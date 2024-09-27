@@ -1,6 +1,8 @@
 package br.com.alverad.ecommerce.application.config.swagger;
 
+import java.util.Optional;
 import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,32 +48,15 @@ public class SwaggerConfig {
         return openApi -> openApi.addSecurityItem(a);
     }
 
-    // @Bean
-    // public OperationCustomizer operationIdCustomizer() {
-    // return (operation, handlerMethod) -> {
-    // Class<?> superClazz = handlerMethod.getBeanType().getSuperclass();
-    // try {
-    // if (Objects.nonNull(superClazz)) {
-    // OperationId annontation =
-    // handlerMethod.getMethod().getAnnotation(OperationId.class);
-    // if (operation != null) {
-    // String beanName = handlerMethod.getBeanType().getSimpleName();
-    // if (beanName.equals("CardKanbanController")) {
-    // System.out.println(handlerMethod.getMethod().getName());
-    // }
-    // operation.setOperationId(Optional.of(annontation.value())
-    // .orElse(handlerMethod.getMethod().getName()));
-    // } else {
-    // operation.setOperationId(handlerMethod.getMethod().getName());
-    // }
-    // }
-    // return operation;
 
-    // } catch (Exception e) {
-    // // TODO: handle exception
-
-    // return null;
-    // }
-    // };
-    // }
+    @Bean
+    public OperationCustomizer operationIdCustomizer() {
+        return (operation, handlerMethod) -> {
+            Optional.ofNullable(handlerMethod
+                    .getMethodAnnotation(io.swagger.v3.oas.annotations.Operation.class))
+                    .map(io.swagger.v3.oas.annotations.Operation::operationId)
+                    .ifPresent(operation::setOperationId);
+            return operation;
+        };
+    }
 }
