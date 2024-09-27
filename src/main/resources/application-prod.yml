@@ -3,6 +3,9 @@ logging:
     '[org.hibernate.stat]': debug
 
 spring:
+  profiles:
+    include:
+    - keycloak
   devtools:
     add-properties: false
 

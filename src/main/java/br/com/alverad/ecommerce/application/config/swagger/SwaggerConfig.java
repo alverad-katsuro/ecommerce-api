@@ -17,13 +17,13 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "hodpe-api", version = "1.0",
+@OpenAPIDefinition(info = @Info(title = "ecommerce-api", version = "1.0",
         license = @License(name = "Defensoria Pública do Estado Pará",
                 url = "http://defensoria.pa.def.br/missao.aspx"),
         description = "API do Sistema de Honorários da Defensoria Pública do Estado do Pará.",
         contact = @Contact(name = "Sistemas DPE-PA")),
         externalDocs = @ExternalDocumentation(description = "Wiki do Projeto no Gitlab",
-                url = "https://gitlab.defensoria.pa.def.br/honorarios/hodpe-api/-/wikis/home"))
+                url = "https://gitlab.defensoria.pa.def.br/honorarios/ecommerce-api/-/wikis/home"))
 
 @SecurityScheme(name = "Bearer", type = SecuritySchemeType.HTTP, scheme = "bearer",
         bearerFormat = "JWT")
