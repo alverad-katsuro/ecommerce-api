@@ -3,6 +3,7 @@ spring:
     group:
       homol: homol,keycloak
       prod: prod,keycloak
+      test: test
     default: homol
   application:
     name: ecommerce-api

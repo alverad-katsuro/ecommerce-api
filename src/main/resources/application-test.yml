@@ -1,4 +1,6 @@
 spring:
+  cache:
+    type: none
   application:
     name: ecommerce-api
   servlet:
@@ -23,11 +25,6 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
 
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -37,8 +34,8 @@ spring:
           envers:
             "[default_schema]": auditoria
 
-#   security:
-#     oauth2:
+  security:
+    oauth2:
 #       client:
 #         registration:
 #           keycloak:
@@ -59,19 +56,12 @@ spring:
 #           keycloak-client-credentials:
 #             issuer-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}
 #             user-name-attribute: preferred_username
-#       resourceserver:
-#         jwt:
-#           issuer-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}
-#           jwk-set-uri: ${KEYCLOACK_BASE}/realms/${KEYCLOACK_REALM}/protocol/openid-connect/certs
+      resourceserver:
+        jwt:
+          issuer-uri: https://auth.alverad.com.br/realms/Alverad_Services
+          jwk-set-uri: https://auth.alverad.com.br/realms/Alverad_Services/protocol/openid-connect/certs
 
-# Swagger
-springdoc:
-  swagger-ui:
-    filter: true
-    use-root-path: true
-  show-login-endpoint: true
-  api-docs:
-    path: /v3/api-docs
+
 
 logging:
   file:
